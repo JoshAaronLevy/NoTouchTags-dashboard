@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bean-erp-client": {
+    "notouchtags-dashboard": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bean-erp-client",
+            "outputPath": "dist/notouchtags-dashboard",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -74,18 +74,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bean-erp-client:build"
+            "browserTarget": "notouchtags-dashboard:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bean-erp-client:build:production"
+              "browserTarget": "notouchtags-dashboard:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bean-erp-client:build"
+            "browserTarget": "notouchtags-dashboard:build"
           }
         },
         "test": {
@@ -122,16 +122,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "bean-erp-client:serve"
+            "devServerTarget": "notouchtags-dashboard:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "bean-erp-client:serve:production"
+              "devServerTarget": "notouchtags-dashboard:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "bean-erp-client"
+  "defaultProject": "notouchtags-dashboard"
 }

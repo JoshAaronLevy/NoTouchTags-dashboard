@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'bean-erp-client'`, () => {
+  it(`should have as title 'notouchtags-dashboard'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('bean-erp-client');
+    expect(app.title).toEqual('notouchtags-dashboard');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('bean-erp-client app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('notouchtags-dashboard app is running!');
   });
 });

@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/bean-erp-client'),
+      dir: require('path').join(__dirname, './coverage/notouchtags-dashboard'),
       subdir: '.',
       reporters: [
         { type: 'html' },

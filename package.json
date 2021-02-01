@@ -1,9 +1,10 @@
 {
-  "name": "bean-erp-client",
+  "name": "notouchtags-dashboard",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
+    "deploy": "rm -rf dist && ng build && firebase deploy && git add -A && git commit -m 'Deployed to Firebase' && git push",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
