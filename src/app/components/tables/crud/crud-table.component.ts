@@ -3,7 +3,8 @@ import { Product } from '../../../domain/product';
 import { ProductService } from '../../../services/productservice';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
-import * as XLSX from 'xlsx';
+import { Parse } from 'Parse';
+import { TagsService } from 'src/app/services/tags.service';
 
 declare var jsPDF: any;
 
@@ -29,13 +30,21 @@ export class CrudTableComponent implements OnInit {
 
   exportColumns: any[];
 
+  tags: any;
+
+  queriedTags: any;
+
+  ownerEmail: string;
+
   constructor(
     private productService: ProductService,
+    private tagsService: TagsService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit() {
+    this.ownerEmail = `info@kcontemporaryart.com`;
     this.productService.getProducts().then(data => {
       this.products = data;
       this.exportColumns = Object.keys(this.products[0]);
@@ -45,6 +54,22 @@ export class CrudTableComponent implements OnInit {
       { label: 'LOW STOCK', value: 'lowstock' },
       { label: 'OUT OF STOCK', value: 'outofstock' }
     ];
+    // this.parseTestAll();
+    this.parseTestQuery();
+  }
+
+  parseTestAll() {
+    this.tagsService.getAllTags().subscribe(results => {
+      this.tags = results;
+      console.log(this.tags);
+    });
+  }
+
+  parseTestQuery() {
+    this.tagsService.getQuery(this.ownerEmail).subscribe(results => {
+      this.queriedTags = results;
+      console.log(this.queriedTags);
+    });
   }
 
   openNew() {
