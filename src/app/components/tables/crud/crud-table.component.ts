@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from '../../../domain/product';
-import { ProductService } from '../../../services/productservice';
+import { Tags } from '../../../models/tag.model';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
-import { Parse } from 'Parse';
 import { TagsService } from 'src/app/services/tags.service';
 
 declare var jsPDF: any;
@@ -12,17 +10,16 @@ declare var jsPDF: any;
   selector: 'app-crud-table',
   templateUrl: './crud-table.component.html',
   styleUrls: ['./crud-table.component.scss'],
-  providers: [MessageService, ConfirmationService, ProductService]
+  providers: [MessageService, ConfirmationService]
 })
 export class CrudTableComponent implements OnInit {
+  loadingTags: boolean = true;
 
-  productDialog: boolean;
+  tagDialog: boolean;
 
-  products: Product[];
+  tag: any;
 
-  product: Product;
-
-  selectedProducts: Product[];
+  selectedTags: Tags[];
 
   submitted: boolean;
 
@@ -30,30 +27,20 @@ export class CrudTableComponent implements OnInit {
 
   exportColumns: any[];
 
-  tags: any;
+  tags: Tags[];
 
   queriedTags: any;
 
   ownerEmail: string;
 
   constructor(
-    private productService: ProductService,
     private tagsService: TagsService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit() {
-    this.ownerEmail = `info@kcontemporaryart.com`;
-    this.productService.getProducts().then(data => {
-      this.products = data;
-      this.exportColumns = Object.keys(this.products[0]);
-    });
-    this.statuses = [
-      { label: 'IN STOCK', value: 'instock' },
-      { label: 'LOW STOCK', value: 'lowstock' },
-      { label: 'OUT OF STOCK', value: 'outofstock' }
-    ];
+    this.ownerEmail = `demo@tollbrothers.com`;
     // this.parseTestAll();
     this.parseTestQuery();
   }
@@ -68,74 +55,63 @@ export class CrudTableComponent implements OnInit {
   parseTestQuery() {
     this.tagsService.getQuery(this.ownerEmail).subscribe(results => {
       this.queriedTags = results;
-      console.log(this.queriedTags);
+      setTimeout(() => {
+        this.loadingTags = false;
+      }, 1500);
     });
   }
 
   openNew() {
-    this.product = {};
+    this.tag = {};
     this.submitted = false;
-    this.productDialog = true;
+    this.tagDialog = true;
   }
 
-  deleteSelectedProducts() {
+  editProduct(tag: Tags) {
+    this.tag = { ...tag };
+    this.tagDialog = true;
+  }
+
+  deleteProduct(tag: Tags) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected products?',
+      message: 'Are you sure you want to delete ' + tag.tagTitle + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
-        this.selectedProducts = null;
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-      }
-    });
-  }
-
-  editProduct(product: Product) {
-    this.product = { ...product };
-    this.productDialog = true;
-  }
-
-  deleteProduct(product: Product) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + product.name + '?',
-      header: 'Confirm',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.products = this.products.filter(val => val.id !== product.id);
-        this.product = {};
+        this.tags = this.tags.filter(val => val.tagId !== tag.tagId);
+        this.tag = {};
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
       }
     });
   }
 
   hideDialog() {
-    this.productDialog = false;
+    this.tagDialog = false;
     this.submitted = false;
   }
 
   saveProduct() {
     this.submitted = true;
-    if (this.product.name.trim()) {
-      if (this.product.id) {
-        this.products[this.findIndexById(this.product.id)] = this.product;
+    if (this.tag.name.trim()) {
+      if (this.tag.id) {
+        this.tags[this.findIndexById(this.tag.id)] = this.tag;
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
       } else {
-        this.product.id = this.createId();
-        this.product.image = 'product-placeholder.svg';
-        this.products.push(this.product);
+        this.tag.id = this.createId();
+        this.tag.image = 'tag-placeholder.svg';
+        this.tags.push(this.tag);
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
       }
-      this.products = [...this.products];
-      this.productDialog = false;
-      this.product = {};
+      this.tags = [...this.tags];
+      this.tagDialog = false;
+      this.tag = {};
     }
   }
 
-  findIndexById(id: string): number {
+  findIndexById(tagId: string): number {
     let index = -1;
-    for (let i = 0; i < this.products.length; i++) {
-      if (this.products[i].id === id) {
+    for (let i = 0; i < this.tags.length; i++) {
+      if (this.tags[i].tagId === tagId) {
         index = i;
         break;
       }
@@ -154,10 +130,10 @@ export class CrudTableComponent implements OnInit {
 
   exportExcel() {
     import("xlsx").then(xlsx => {
-      const worksheet = xlsx.utils.json_to_sheet(this.products);
+      const worksheet = xlsx.utils.json_to_sheet(this.tags);
       const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-      this.saveAsExcelFile(excelBuffer, "products");
+      this.saveAsExcelFile(excelBuffer, "tags");
     });
   }
 
@@ -174,7 +150,7 @@ export class CrudTableComponent implements OnInit {
 
   exportPdf() {
     const doc = new jsPDF.default(0,0);
-    doc.autoTable(this.exportColumns, this.products);
-    doc.save('products.pdf');
+    doc.autoTable(this.exportColumns, this.tags);
+    doc.save('tags.pdf');
   }
 }

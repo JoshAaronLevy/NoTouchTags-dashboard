@@ -1,36 +1,38 @@
 <p-toast></p-toast>
 
-<div class="card">
+<p-dialog [(visible)]="loadingTags" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [showHeader]="false"
+  [draggable]="false" [resizable]="false" [closable]="false">
+  <h1 class="text-center loading-modal">Loading Tags...</h1>
+</p-dialog>
+
+<div *ngIf="!loadingTags" class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
-        (click)="openNew()"></button>
-      <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger"
-        (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+      <!-- <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedTags()" [disabled]="!selectedTags || !selectedTags.length"></button> -->
     </ng-template>
 
     <ng-template pTemplate="right">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
-        class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload> -->
       <button pButton pRipple label="Export Excel" icon="pi pi-upload" class="p-button-success" (click)="exportExcel()"></button>
     </ng-template>
   </p-toolbar>
 
   <p-table
     #dt
-    [value]="products"
+    [value]="queriedTags"
     [rows]="10"
     [paginator]="true"
     [rowsPerPageOptions]="[10,25,50]"
-    [globalFilterFields]="['name','country.name','representative.name','status']"
-    [(selection)]="selectedProducts"
+    [globalFilterFields]="['tagId','tagTitle','tagPrice','tagAddress']"
+    [(selection)]="selectedTags"
     [rowHover]="true"
     dataKey="id"
-    currentPageReportTemplate="{first} - {last} of {totalRecords} Total Products"
+    currentPageReportTemplate="{first} - {last} of {totalRecords} Total Tags"
     [showCurrentPageReport]="true">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Manage Products</h5>
+        <h5 class="p-m-0">Manage Tags</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
@@ -43,48 +45,42 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon>
+        <th pSortableColumn="tagId">ID <p-sortIcon field="tagId"></p-sortIcon>
         </th>
-        <th>Image</th>
-        <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon>
+        <th pSortableColumn="tagTitle">Title <p-sortIcon field="tagTitle"></p-sortIcon>
         </th>
-        <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon>
+        <th pSortableColumn="updatedAt">Last Scanned <p-sortIcon field="updatedAt"></p-sortIcon>
         </th>
-        <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon>
+        <th pSortableColumn="tagPrice">Price <p-sortIcon field="tagPrice"></p-sortIcon>
         </th>
-        <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        <th pSortableColumn="tagAddress">Address <p-sortIcon field="tagAddress"></p-sortIcon>
         </th>
         <th></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
+    <ng-template pTemplate="body" let-tag>
       <tr>
         <td>
-          <p-tableCheckbox [value]="product"></p-tableCheckbox>
+          <p-tableCheckbox [value]="tag"></p-tableCheckbox>
         </td>
-        <td>{{product.name}}</td>
-        <td><img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name" width="100"
-            class="p-shadow-4" /></td>
-        <td>{{product.price | currency:'USD'}}</td>
-        <td>{{product.category}}</td>
+        <td>{{tag.tagId}}</td>
+        <td>{{tag.tagTitle}}</td>
+        <!-- <td>
+          <img [src]="'assets/showcase/images/demo/tag/' + tag.image" [alt]="tag.name" width="100" class="p-shadow-4" />
+        </td> -->
+        <td>{{tag.updatedAt | date:'MMM dd, yyyy' }}</td>
+        <td>{{tag.tagPrice}}</td>
+        <td>{{tag.tagAddress}}</td>
         <td>
-          <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
-        </td>
-        <td><span
-            [class]="'product-badge status-' + (product.inventoryStatus ? product.inventoryStatus.toLowerCase() : '')">{{product.inventoryStatus}}</span>
-        </td>
-        <td>
-          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
-            (click)="editProduct(product)"></button>
-          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-            (click)="deleteProduct(product)"></button>
+          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info p-mr-2" (click)="editProduct(tag)"></button>
+          <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(tag)"></button> -->
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
 
-<p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true"
+<p-dialog [(visible)]="tagDialog" [style]="{width: '450px'}" header="Tag Details" [modal]="true"
   styleClass="p-fluid">
   <ng-template pTemplate="content">
     <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.image" class="product-image"
@@ -98,15 +94,6 @@
       <label for="description">Description</label>
       <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3"
         cols="20"></textarea>
-    </div>
-    <div class="p-field">
-      <label for="inventoryStatus">Inventory Status</label>
-      <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses"
-        placeholder="Select">
-        <ng-template let-option pTemplate="item">
-          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
-        </ng-template>
-      </p-dropdown>
     </div>
 
     <div class="p-field">
