@@ -7,11 +7,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PrimeNGBundleModule } from './primeng.module';
 import { CrudTableComponent } from './components/tables/crud/crud-table.component';
+import { SignInComponent } from './components/shared/sign-in/sign-in.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CrudTableComponent
+    CrudTableComponent,
+    SignInComponent
   ],
   imports: [
     BrowserModule,
@@ -19,6 +21,9 @@ import { CrudTableComponent } from './components/tables/crud/crud-table.componen
     AppRoutingModule,
     PrimeNGBundleModule,
     HttpClientModule
+  ],
+  entryComponents: [
+    SignInComponent
   ],
   providers: [],
   schemas: [

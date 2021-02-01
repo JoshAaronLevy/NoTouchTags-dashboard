@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Tags } from '../../../models/tag.model';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { TagsService } from 'src/app/services/tags.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { Subscription } from 'rxjs';
 
 declare var jsPDF: any;
 
@@ -10,10 +12,20 @@ declare var jsPDF: any;
   selector: 'app-crud-table',
   templateUrl: './crud-table.component.html',
   styleUrls: ['./crud-table.component.scss'],
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, AuthService]
 })
 export class CrudTableComponent implements OnInit {
+  currentUser: any;
+
+  email: string;
+
+  password: string;
+
+  signIn: boolean = false;
+
   loadingTags: boolean = true;
+
+  loadingError: boolean;
 
   tagDialog: boolean;
 
@@ -31,17 +43,31 @@ export class CrudTableComponent implements OnInit {
 
   queriedTags: any;
 
-  ownerEmail: string;
+  ownerEmail: string = `demo@tollbrothers.com`;
+
+  user: string;
+
+  loggedIn: boolean;
+
+  subscription: Subscription;
 
   constructor(
     private tagsService: TagsService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
-  ) { }
+    private confirmationService: ConfirmationService,
+    public authService: AuthService
+  ) {
+    this.subscription = authService.authChangeDetected$.subscribe(
+      currentUser => {
+        this.user = currentUser;
+        console.log(this.user);
+    });
+  }
 
   ngOnInit() {
-    this.ownerEmail = `demo@tollbrothers.com`;
+    this.currentUser = localStorage.getItem('user');
     // this.parseTestAll();
+    console.log(this.currentUser);
     this.parseTestQuery();
   }
 
@@ -53,11 +79,20 @@ export class CrudTableComponent implements OnInit {
   }
 
   parseTestQuery() {
-    this.tagsService.getQuery(this.ownerEmail).subscribe(results => {
-      this.queriedTags = results;
-      setTimeout(() => {
-        this.loadingTags = false;
-      }, 1500);
+    this.tagsService.getQuery(this.currentUser).subscribe(results => {
+      console.log(results.length);
+      if (!results || results.length < 1) {
+        setTimeout(() => {
+          this.loadingError = true;
+          this.loadingTags = false;
+        }, 1500);
+      } else {
+        this.queriedTags = results;
+        setTimeout(() => {
+          this.loadingError = false;
+          this.loadingTags = false;
+        }, 1500);
+      }
     });
   }
 

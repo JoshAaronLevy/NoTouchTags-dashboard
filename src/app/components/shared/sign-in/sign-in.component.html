@@ -1,0 +1,21 @@
+<div class="p-fluid p-grid">
+  <br />
+  <br />
+  <div class="p-field p-col-12 p-md-4">
+    <span class="p-float-label">
+      <input type="text" id="email" pInputText [(ngModel)]="email"> 
+      <label for="email">Email</label>
+    </span>
+  </div>
+  <br />
+  <br />
+  <div class="p-field p-col-12 p-md-4">
+    <span class="p-float-label">
+      <input type="password" id="password" pPassword [(ngModel)]="password"> 
+      <label for="password">Password</label>
+    </span>
+  </div>
+  <br />
+  <br />
+</div>
+<button [disabled]="!email || !password" pButton pRipple label="Sign In" class="p-button-success p-mr-2" (click)="submitSignIn(email)"></button>

@@ -5,7 +5,13 @@
   <h1 class="text-center loading-modal">Loading Tags...</h1>
 </p-dialog>
 
-<div *ngIf="!loadingTags" class="card">
+<p-messages *ngIf="loadingError === true" severity="error">
+  <ng-template pTemplate>
+    <div class="p-ml-2">Unable to load tags.</div>
+  </ng-template>
+</p-messages>
+
+<div *ngIf="!loadingTags && !loadingError" class="card">
   <h1 class="table-title">Your Tags</h1>
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
