@@ -1,10 +1,11 @@
 <div class="toolbar" role="banner">
   <strong style="font-size: 18px; padding-left: 30px;">NoTouchTags</strong>
-  <button pButton pRipple style="margin-right: 30px;" label="Sign Out" class="p-button-danger p-mr-2" (click)="signOut(user)"></button>
+  <!-- <button *ngIf="user" pButton pRipple style="margin-right: 30px;" label="Sign Out" class="p-button-danger p-mr-2" (click)="signOut(user)"></button>
+  <button *ngIf="!user || user === undefined || user === null" pButton pRipple style="margin-right: 30px;" label="Sign In" class="p-button-success p-mr-2" (click)="triggerSignIn()"></button> -->
 </div>
 
 <div class="content" role="main">
-  <app-crud-table></app-crud-table>
+  <app-crud-table class="table-container"></app-crud-table>
 </div>
 
 <router-outlet></router-outlet>

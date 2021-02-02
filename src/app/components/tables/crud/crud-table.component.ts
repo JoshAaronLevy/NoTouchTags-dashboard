@@ -56,18 +56,16 @@ export class CrudTableComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     public authService: AuthService
-  ) {
-    this.subscription = authService.authChangeDetected$.subscribe(
-      currentUser => {
-        this.user = currentUser;
-        console.log(this.user);
-    });
-  }
+  ) {}
 
   ngOnInit() {
     this.currentUser = localStorage.getItem('user');
     // this.parseTestAll();
-    console.log(this.currentUser);
+    if (this.currentUser !== null || this.currentUser !== undefined || this.currentUser !== '') {
+      this.loggedIn = true;
+    } else {
+      this.loggedIn = false;
+    }
     this.parseTestQuery();
   }
 
@@ -79,6 +77,7 @@ export class CrudTableComponent implements OnInit {
   }
 
   parseTestQuery() {
+    this.currentUser = this.ownerEmail;
     this.tagsService.getQuery(this.currentUser).subscribe(results => {
       console.log(results.length);
       if (!results || results.length < 1) {

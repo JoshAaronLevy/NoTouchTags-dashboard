@@ -6,8 +6,11 @@
 </p-dialog>
 
 <p-messages *ngIf="loadingError === true" severity="error">
-  <ng-template pTemplate>
-    <div class="p-ml-2">Unable to load tags.</div>
+  <ng-template *ngIf="loggedIn === true" pTemplate>
+    <div class="p-ml-2">No tags found.</div>
+  </ng-template>
+  <ng-template *ngIf="loggedIn === false" pTemplate>
+    <div class="p-ml-2">Unable to load tags. Please make sure you are signed in.</div>
   </ng-template>
 </p-messages>
 

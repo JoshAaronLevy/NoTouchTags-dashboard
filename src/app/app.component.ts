@@ -4,6 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { SignInComponent } from './components/shared/sign-in/sign-in.component';
 import { AuthService } from './services/auth.service';
+import { Store, select } from '@ngrx/store';
 
 @Component({
   selector: 'app-root',
@@ -25,14 +26,9 @@ export class AppComponent implements OnInit {
     private primengConfig: PrimeNGConfig,
     public dialogService: DialogService,
     public messageService: MessageService,
-    public authService: AuthService
-  ) {
-    this.subscription = authService.authChangeDetected$.subscribe(
-      currentUser => {
-        this.user = currentUser;
-        console.log(this.user);
-    });
-  }
+    public authService: AuthService,
+    private store: Store
+  ) {}
 
   ngOnInit() {
     this.user = localStorage.getItem('user');
@@ -72,15 +68,15 @@ export class AppComponent implements OnInit {
 
   confirm() {
     this.loggedIn = true;
-    this.authService.confirmAuthState(this.user);
     localStorage.setItem('user', this.user);
   }
 
   signOut(user) {
     user = '';
-    localStorage.removeItem('user');
+    this.user = user;
     this.loggedIn = false;
-    this.checkAuthStatus(user);
+    localStorage.removeItem('user');
+    // this.checkAuthStatus(user);
   }
 
   ngOnDestroy() {

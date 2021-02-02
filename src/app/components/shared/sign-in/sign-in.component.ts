@@ -25,7 +25,6 @@ export class SignInComponent implements OnDestroy {
 
   submitSignIn(email) {
     this.user = email;
-    this.authService.changeAuthState(email);
     localStorage.setItem('user', this.user);
     this.ref.close(this.user);
   }
