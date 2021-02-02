@@ -26,17 +26,12 @@ import { AuthInterceptorService } from './interceptors/authentication.intercepto
     BrowserAnimationsModule,
     AppRoutingModule,
     PrimeNGBundleModule,
-    HttpClientModule,
-    StoreModule.forRoot(AppReducers),
-    EffectsModule.forRoot(AppEffects),
-    StoreDevtoolsModule.instrument(),
+    HttpClientModule
   ],
   entryComponents: [
     SignInComponent
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
-  ],
+  providers: [],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

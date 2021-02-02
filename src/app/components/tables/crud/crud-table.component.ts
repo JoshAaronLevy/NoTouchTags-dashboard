@@ -3,7 +3,7 @@ import { Tags } from '../../../models/tag.model';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import { TagsService } from 'src/app/services/tags.service';
-import { AuthService } from 'src/app/services/auth.service';
+// import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 
 declare var jsPDF: any;
@@ -12,7 +12,7 @@ declare var jsPDF: any;
   selector: 'app-crud-table',
   templateUrl: './crud-table.component.html',
   styleUrls: ['./crud-table.component.scss'],
-  providers: [MessageService, ConfirmationService, AuthService]
+  providers: [MessageService, ConfirmationService]
 })
 export class CrudTableComponent implements OnInit {
   currentUser: any;
@@ -54,8 +54,8 @@ export class CrudTableComponent implements OnInit {
   constructor(
     private tagsService: TagsService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    public authService: AuthService
+    private confirmationService: ConfirmationService
+    // public authService: AuthService
   ) {}
 
   ngOnInit() {

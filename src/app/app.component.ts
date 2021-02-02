@@ -3,8 +3,8 @@ import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { SignInComponent } from './components/shared/sign-in/sign-in.component';
-import { AuthService } from './services/auth.service';
-import { Store, select } from '@ngrx/store';
+// import { AuthService } from './services/auth.service';
+// import { Store, select } from '@ngrx/store';
 
 @Component({
   selector: 'app-root',
@@ -12,8 +12,7 @@ import { Store, select } from '@ngrx/store';
   styleUrls: ['./app.component.scss'],
   providers: [
     DialogService,
-    MessageService,
-    AuthService
+    MessageService
   ]
 })
 export class AppComponent implements OnInit {
@@ -26,12 +25,14 @@ export class AppComponent implements OnInit {
     private primengConfig: PrimeNGConfig,
     public dialogService: DialogService,
     public messageService: MessageService,
-    public authService: AuthService,
-    private store: Store
+    // public authService: AuthService,
+    // private store: Store
   ) {}
 
   ngOnInit() {
     this.user = localStorage.getItem('user');
+    // this.user = `demo@tollbrothers.com`;
+    // localStorage.setItem('user', this.user);
     this.checkAuthStatus(this.user);
     this.primengConfig.ripple = true;
   }

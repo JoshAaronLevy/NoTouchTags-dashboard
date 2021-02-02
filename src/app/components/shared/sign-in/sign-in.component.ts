@@ -1,14 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { AuthService } from 'src/app/services/auth.service';
+// import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
-  providers: [AuthService]
+  providers: []
 })
 export class SignInComponent implements OnDestroy {
   user: any;
@@ -20,7 +20,7 @@ export class SignInComponent implements OnDestroy {
   constructor(
     public ref: DynamicDialogRef,
     public config: DynamicDialogConfig,
-    public authService: AuthService
+    // public authService: AuthService
   ) {}
 
   submitSignIn(email) {
